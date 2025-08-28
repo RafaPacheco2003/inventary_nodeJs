@@ -1,49 +1,33 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  # Servicio de la base de datos PostgreSQL
   postgres:
     image: postgres:13
     container_name: postgres_container
     environment:
-      POSTGRES_DB: postgres
       POSTGRES_USER: root
       POSTGRES_PASSWORD: rafaul
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app_network
     restart: unless-stopped
 
-  # Servicio de la aplicación Node.js
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: inventory_app
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USERNAME=root
-      - DB_PASSWORD=rafaul
-      - DB_NAME=postgres
-      - PORT=3000
-      - NODE_ENV=production
+    image: techshare:1.0
+    container_name: node_app
     ports:
       - "3000:3000"
+    environment:
+      DB_HOST: postgres
+      DB_USERNAME: root
+      DB_PASSWORD: rafaul
+      DB_NAME: postgres
+      DB_PORT: 5432
+      NODE_ENV: production
     depends_on:
       - postgres
-    networks:
-      - app_network
     restart: unless-stopped
-
-# Redes
-networks:
-  app_network:
-    driver: bridge
-
 # Volúmenes
 volumes:
   postgres_data:

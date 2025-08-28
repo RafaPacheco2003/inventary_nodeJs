@@ -1,0 +1,33 @@
+# Ver estado de los contenedores
+docker-compose ps
+
+# Ver logs en tiempo real
+docker-compose logs -f
+
+# Detener los servicios (los datos persisten)
+docker-compose down
+
+# Iniciar again
+docker-compose up -d
+
+# Reiniciar solo la app
+docker-compose restart app
+
+
+
+# DETENER todo (los datos se mantienen en el volumen)
+docker-compose down
+
+# LEVANTAR todo again (los datos siguen ahí)
+docker-compose up -d
+
+# VERIFICAR que todo esté bien
+docker-compose logs -f
+
+
+
+# 1. Reconstruir la imagen de Node.js
+docker-compose build app
+
+# 2. Reiniciar solo la app (PostgreSQL y datos NO se afectan)
+docker-compose up -d --force-recreate app
