@@ -1,5 +1,4 @@
-import express, { Application } from "express";
-import { json, urlencoded } from "body-parser";
+import express from "express";
 import "reflect-metadata";
 import "dotenv/config";
 import { initializeDatabase } from "./config/database";
@@ -8,39 +7,25 @@ import { errorHandler } from "./middleware/errorHandler";
 
 const PORT = process.env.PORT || 3000;
 
-const startServer = async (): Promise<void> => {
-  try {
-    // Inicializar base de datos
-    await initializeDatabase();
+initializeDatabase();
+const app = express();
 
-    const app = express();
+// Middlewares y configuración básica
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-    // Middlewares
-    app.use(json());
-    app.use(urlencoded({ extended: true }));
+// Rutas
+app.use("/api/v1", userRoutes);
+app.get("/health", (_, res) =>
+  res.status(200).json({
+    status: "OK",
+    message: "Servidor funcionando correctamente",
+  })
+);
+// Manejo de errores
+app.use(errorHandler);
 
-    // Rutas
-    app.use("/api/users", userRoutes);
-
-    // Ruta de salud
-    app.get("/health", (req, res) => {
-      res
-        .status(200)
-        .json({ status: "OK", message: "Servidor funcionando correctamente" });
-    });
-
-    // Manejo de errores
-    app.use(errorHandler);
-
-    // Iniciar el servidor
-    app.listen(PORT, () => {
-      console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error("Error al iniciar el servidor:", error);
-    process.exit(1);
-  }
-};
-
-// Ejecutar el servidor
-startServer();
+// Iniciar el servidor
+app.listen(PORT, () => {
+  console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
+});

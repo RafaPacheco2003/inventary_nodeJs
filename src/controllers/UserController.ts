@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { UserService } from "../services/UserService";
 import { CreateUserDto, UpdateUserDto } from "../dtos/user.dto";
-import { BadRequestError } from "../middleware/errorHandler";
 import { plainToInstance } from "class-transformer";
 
 export class UserController {
@@ -11,104 +10,68 @@ export class UserController {
     this.userService = new UserService();
   }
 
+  /**
+   * Obtiene todos los usuarios
+   */
   getAllUsers = async (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const users = await this.userService.getAllUsers();
-      res.status(200).json({
-        success: true,
-        data: users,
-      });
-    } catch (error) {
-      next(error);
-    }
+    const users = await this.userService.getAllUsers();
+    res.status(200).json(users);
   };
 
+  /**
+   * Obtiene un usuario por su ID
+   */
   getUserById = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        throw new BadRequestError("ID de usuario inválido");
-      }
-
-      const user = await this.userService.getUserById(id);
-      res.status(200).json({
-        success: true,
-        data: user,
-      });
-    } catch (error) {
-      next(error);
-    }
+    const user = await this.userService.getUserById(req.params.id);
+    res.status(200).json(user);
   };
 
+  /**
+   * Crea un nuevo usuario
+   */
   createUser = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const createUserDto = plainToInstance(CreateUserDto, req.body);
-      const newUser = await this.userService.createUser(createUserDto);
-
-      res.status(201).json({
-        success: true,
-        data: newUser,
-        message: "Usuario creado exitosamente",
-      });
-    } catch (error) {
-      next(error);
-    }
+    const createUserDto = plainToInstance(CreateUserDto, req.body);
+    const newUser = await this.userService.createUser(createUserDto);
+    res.status(201).json(newUser);
   };
 
+  /**
+   * Actualiza un usuario existente
+   */
   updateUser = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        throw new BadRequestError("ID de usuario inválido");
-      }
-
-      const updateUserDto = plainToInstance(UpdateUserDto, req.body);
-      const updatedUser = await this.userService.updateUser(id, updateUserDto);
-
-      res.status(200).json({
-        success: true,
-        data: updatedUser,
-        message: "Usuario actualizado exitosamente",
-      });
-    } catch (error) {
-      next(error);
-    }
+    const updateUserDto = plainToInstance(UpdateUserDto, req.body);
+    const updatedUser = await this.userService.updateUser(
+      req.params.id,
+      updateUserDto
+    );
+    res.status(200).json(updatedUser);
   };
 
+  /**
+   * Elimina un usuario
+   */
   deleteUser = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        throw new BadRequestError("ID de usuario inválido");
-      }
-
-      await this.userService.deleteUser(id);
-      res.status(200).json({
-        success: true,
-        message: "Usuario eliminado exitosamente",
-      });
-    } catch (error) {
-      next(error);
-    }
+    await this.userService.deleteUser(req.params.id);
+    res.status(200).json({ message: "Usuario eliminado exitosamente" });
   };
 }
