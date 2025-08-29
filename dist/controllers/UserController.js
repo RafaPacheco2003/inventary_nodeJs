@@ -3,85 +3,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const UserService_1 = require("../services/UserService");
 const user_dto_1 = require("../dtos/user.dto");
-const errorHandler_1 = require("../middleware/errorHandler");
 const class_transformer_1 = require("class-transformer");
 class UserController {
     constructor() {
-        this.getAllUsers = async (req, res, next) => {
-            try {
-                const users = await this.userService.getAllUsers();
-                res.status(200).json({
-                    success: true,
-                    data: users,
-                });
-            }
-            catch (error) {
-                next(error);
-            }
+        /**
+         * Obtiene todos los usuarios
+         */
+        this.getAllUsers = async (_req, res, next) => {
+            const users = await this.userService.getAllUsers();
+            res.status(200).json(users);
         };
+        /**
+         * Obtiene un usuario por su ID
+         */
         this.getUserById = async (req, res, next) => {
-            try {
-                const id = parseInt(req.params.id);
-                if (isNaN(id)) {
-                    throw new errorHandler_1.BadRequestError("ID de usuario inválido");
-                }
-                const user = await this.userService.getUserById(id);
-                res.status(200).json({
-                    success: true,
-                    data: user,
-                });
-            }
-            catch (error) {
-                next(error);
-            }
+            const user = await this.userService.getUserById(req.params.id);
+            res.status(200).json(user);
         };
+        /**
+         * Crea un nuevo usuario
+         */
         this.createUser = async (req, res, next) => {
-            try {
-                const createUserDto = (0, class_transformer_1.plainToInstance)(user_dto_1.CreateUserDto, req.body);
-                const newUser = await this.userService.createUser(createUserDto);
-                res.status(201).json({
-                    success: true,
-                    data: newUser,
-                    message: "Usuario creado exitosamente",
-                });
-            }
-            catch (error) {
-                next(error);
-            }
+            const createUserDto = (0, class_transformer_1.plainToInstance)(user_dto_1.CreateUserDto, req.body);
+            const newUser = await this.userService.createUser(createUserDto);
+            res.status(201).json(newUser);
         };
+        /**
+         * Actualiza un usuario existente
+         */
         this.updateUser = async (req, res, next) => {
-            try {
-                const id = parseInt(req.params.id);
-                if (isNaN(id)) {
-                    throw new errorHandler_1.BadRequestError("ID de usuario inválido");
-                }
-                const updateUserDto = (0, class_transformer_1.plainToInstance)(user_dto_1.UpdateUserDto, req.body);
-                const updatedUser = await this.userService.updateUser(id, updateUserDto);
-                res.status(200).json({
-                    success: true,
-                    data: updatedUser,
-                    message: "Usuario actualizado exitosamente",
-                });
-            }
-            catch (error) {
-                next(error);
-            }
+            const updateUserDto = (0, class_transformer_1.plainToInstance)(user_dto_1.UpdateUserDto, req.body);
+            const updatedUser = await this.userService.updateUser(req.params.id, updateUserDto);
+            res.status(200).json(updatedUser);
         };
+        /**
+         * Elimina un usuario
+         */
         this.deleteUser = async (req, res, next) => {
-            try {
-                const id = parseInt(req.params.id);
-                if (isNaN(id)) {
-                    throw new errorHandler_1.BadRequestError("ID de usuario inválido");
-                }
-                await this.userService.deleteUser(id);
-                res.status(200).json({
-                    success: true,
-                    message: "Usuario eliminado exitosamente",
-                });
-            }
-            catch (error) {
-                next(error);
-            }
+            await this.userService.deleteUser(req.params.id);
+            res.status(200).json({ message: "Usuario eliminado exitosamente" });
         };
         this.userService = new UserService_1.UserService();
     }

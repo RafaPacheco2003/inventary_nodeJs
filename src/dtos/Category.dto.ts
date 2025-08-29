@@ -14,14 +14,12 @@ export class CreateCategoryRequest {
 
 export class UpdateCategoryRequest {
   @IsString()
-  @IsNotEmpty()
   @MinLength(2)
   @MaxLength(50)
-  name!: string;
+  name?: string;
 
   @IsString()
-  @IsNotEmpty()
-  image!: string;
+  image?: string;
 }
 
 export class CategoryResponse {
