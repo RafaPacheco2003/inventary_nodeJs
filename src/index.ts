@@ -5,7 +5,8 @@ import { initializeDatabase } from "./config/database";
 import userRoutes from "./v1/routes/userRoutes";
 import CategoryRoutes from "./v1/routes/CategoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
-import { SwaggerConfig } from "./config/swagger";
+import { SwaggerConfig } from "./config/Swagger";
+import SubCategoryRoutes from "./v1/routes/SubCategoryRoutes";
 
 const PORT = process.env.PORT || 3000;
 
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 // Rutas
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/categories", CategoryRoutes);
+app.use("/api/v1/subcategories", SubCategoryRoutes);
 
 app.get("/health", (_, res) =>
   res.status(200).json({

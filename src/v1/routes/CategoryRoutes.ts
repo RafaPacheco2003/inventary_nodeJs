@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { CategoryController } from "../../controllers/CategoryController";
 import { validateDto } from "../../middleware/validation";
-import { CreateCategoryRequest, UpdateCategoryRequest } from "../../dtos/Category.dto";
+import {
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from "../../dtos/Category.dto";
 
 /**
  * @swagger

@@ -6,6 +6,7 @@ import {
   MaxLength,
   Min,
   MinLength,
+  IsOptional,
 } from "class-validator";
 
 export class CreateSubcategoryRequest {
@@ -19,9 +20,9 @@ export class CreateSubcategoryRequest {
   @IsString()
   image!: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  categoryId!: number;
+  categoryId?: number;
 }
 
 export class UpdateSubcategoryRequest {
@@ -35,9 +36,9 @@ export class UpdateSubcategoryRequest {
   @IsString()
   image!: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  categoryId!: number;
+  categoryId?: number;
 }
 
 export class SubcategoryResponse {

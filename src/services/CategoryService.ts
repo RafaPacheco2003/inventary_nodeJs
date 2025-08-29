@@ -54,7 +54,7 @@ export class CategoryService {
     if (!category) {
       throw new Error(`Category with id ${id} not found`);
     }
-    
+
     // Actualizar solo los campos que vienen en la solicitud
     if (updateCategoryRequest.name !== undefined) {
       category.name = updateCategoryRequest.name;
@@ -62,7 +62,7 @@ export class CategoryService {
     if (updateCategoryRequest.image !== undefined) {
       category.image = updateCategoryRequest.image;
     }
-    
+
     const updatedCategory = await this.categoryRepository.save(category);
     return this.categoryMapper.toResponseDto(updatedCategory);
   }
