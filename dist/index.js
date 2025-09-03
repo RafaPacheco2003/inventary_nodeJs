@@ -10,15 +10,21 @@ const database_1 = require("./config/database");
 const userRoutes_1 = __importDefault(require("./v1/routes/userRoutes"));
 const CategoryRoutes_1 = __importDefault(require("./v1/routes/CategoryRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
+const Swagger_1 = require("./config/Swagger");
+const SubCategoryRoutes_1 = __importDefault(require("./v1/routes/SubCategoryRoutes"));
 const PORT = process.env.PORT || 3000;
 (0, database_1.initializeDatabase)();
 const app = (0, express_1.default)();
+// Configuración de Swagger
+const swaggerConfig = new Swagger_1.SwaggerConfig();
+swaggerConfig.setup(app);
 // Middlewares y configuración básica
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 // Rutas
 app.use("/api/v1/users", userRoutes_1.default);
 app.use("/api/v1/categories", CategoryRoutes_1.default);
+app.use("/api/v1/subcategories", SubCategoryRoutes_1.default);
 app.get("/health", (_, res) => res.status(200).json({
     status: "OK",
     message: "Servidor funcionando correctamente",

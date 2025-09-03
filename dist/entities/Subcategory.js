@@ -9,28 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Category = void 0;
+exports.Subcategory = void 0;
 const typeorm_1 = require("typeorm");
-const Subcategory_1 = require("./Subcategory");
-let Category = class Category {
+const Category_1 = require("./Category");
+let Subcategory = class Subcategory {
 };
-exports.Category = Category;
+exports.Subcategory = Subcategory;
 __decorate([
     (0, typeorm_1.PrimaryGeneratedColumn)(),
     __metadata("design:type", Number)
-], Category.prototype, "id", void 0);
+], Subcategory.prototype, "id", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Category.prototype, "name", void 0);
+], Subcategory.prototype, "name", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
-], Category.prototype, "image", void 0);
+], Subcategory.prototype, "image", void 0);
 __decorate([
-    (0, typeorm_1.OneToMany)(() => Subcategory_1.Subcategory, (subcategory) => subcategory.category),
-    __metadata("design:type", Array)
-], Category.prototype, "subcategories", void 0);
-exports.Category = Category = __decorate([
-    (0, typeorm_1.Entity)("categories")
-], Category);
+    (0, typeorm_1.ManyToOne)(() => Category_1.Category, (category) => category.subcategories),
+    __metadata("design:type", Category_1.Category)
+], Subcategory.prototype, "category", void 0);
+exports.Subcategory = Subcategory = __decorate([
+    (0, typeorm_1.Entity)("subcategories")
+], Subcategory);

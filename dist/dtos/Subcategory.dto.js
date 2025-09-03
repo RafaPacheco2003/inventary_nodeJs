@@ -9,36 +9,48 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CategoryResponse = exports.UpdateCategoryRequest = exports.CreateCategoryRequest = void 0;
+exports.SubcategoryResponse = exports.UpdateSubcategoryRequest = exports.CreateSubcategoryRequest = void 0;
 const class_validator_1 = require("class-validator");
-class CreateCategoryRequest {
+class CreateSubcategoryRequest {
 }
-exports.CreateCategoryRequest = CreateCategoryRequest;
+exports.CreateSubcategoryRequest = CreateSubcategoryRequest;
 __decorate([
-    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MinLength)(2),
-    (0, class_validator_1.MaxLength)(50),
-    __metadata("design:type", String)
-], CreateCategoryRequest.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateCategoryRequest.prototype, "image", void 0);
-class UpdateCategoryRequest {
-}
-exports.UpdateCategoryRequest = UpdateCategoryRequest;
-__decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.MinLength)(2),
     (0, class_validator_1.MaxLength)(50),
     __metadata("design:type", String)
-], UpdateCategoryRequest.prototype, "name", void 0);
+], CreateSubcategoryRequest.prototype, "name", void 0);
 __decorate([
+    (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], UpdateCategoryRequest.prototype, "image", void 0);
-class CategoryResponse {
+], CreateSubcategoryRequest.prototype, "image", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateSubcategoryRequest.prototype, "categoryId", void 0);
+class UpdateSubcategoryRequest {
 }
-exports.CategoryResponse = CategoryResponse;
+exports.UpdateSubcategoryRequest = UpdateSubcategoryRequest;
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MaxLength)(50),
+    __metadata("design:type", String)
+], UpdateSubcategoryRequest.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateSubcategoryRequest.prototype, "image", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UpdateSubcategoryRequest.prototype, "categoryId", void 0);
+class SubcategoryResponse {
+}
+exports.SubcategoryResponse = SubcategoryResponse;
