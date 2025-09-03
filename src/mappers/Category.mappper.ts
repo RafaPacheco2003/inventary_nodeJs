@@ -15,7 +15,7 @@ export class CategoryMapper extends BaseMapper<
   toEntity(createDto: CreateCategoryRequest): Category {
     const entity = new Category();
     entity.name = createDto.name;
-    entity.image = createDto.image;
+    entity.image = createDto.image || "placeholder-image.jpg"; // Valor por defecto
     return entity;
   }
 

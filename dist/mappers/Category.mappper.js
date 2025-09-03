@@ -8,7 +8,7 @@ class CategoryMapper extends base_mapper_1.BaseMapper {
     toEntity(createDto) {
         const entity = new Category_1.Category();
         entity.name = createDto.name;
-        entity.image = createDto.image;
+        entity.image = createDto.image || "placeholder-image.jpg"; // Valor por defecto
         return entity;
     }
     toUpdateEntity(entity, updateDto) {

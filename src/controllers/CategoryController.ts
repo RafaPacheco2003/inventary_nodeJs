@@ -5,13 +5,35 @@ import {
   UpdateCategoryRequest,
 } from "../dtos/Category.dto";
 import { plainToInstance } from "class-transformer";
+import { upload } from "../services/CloudinaryService";
 
+/**
+ * CONTROLADOR DE CATEGORÍAS
+ *
+ * Este controlador maneja todas las operaciones relacionadas con las categorías:
+ * - Creación de nuevas categorías
+ * - Obtención de categorías (todas o por ID)
+ * - Actualización de categorías existentes
+ * - Eliminación de categorías
+ *
+ * Incluye manejo especial para la carga de imágenes mediante middleware.
+ * Cada método implementa un endpoint de la API definido en CategoryRoutes.ts.
+ */
 export class CategoryController {
   private categoryService: CategoryService;
 
   constructor() {
     this.categoryService = new CategoryService();
   }
+
+  /**
+   * Middleware para procesar la carga de imágenes
+   *
+   * Este middleware de multer se encarga de recibir y almacenar temporalmente
+   * el archivo de imagen que viene en la solicitud. Configura multer para
+   * esperar un único archivo en el campo 'image'.
+   */
+  uploadImage = upload.single("image"); // 'image' es el nombre del campo en el formulario
 
   /**
    * @swagger
@@ -32,13 +54,30 @@ export class CategoryController {
    *       500:
    *         $ref: '#/components/responses/InternalServerError'
    */
+  /**
+   * Obtiene todas las categorías
+   *
+   * Este método recupera todas las categorías de la base de datos
+   * y las devuelve como un array en la respuesta.
+   *
+   * @param _req - Objeto de solicitud (no utilizado en este método)
+   * @param res - Objeto de respuesta para enviar el resultado
+   * @param next - Función para pasar al siguiente middleware en caso de error
+   */
   getAllCategories = async (
     _req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const categories = await this.categoryService.getAllCategories();
-    res.status(200).json(categories);
+    try {
+      // Obtener todas las categorías del servicio
+      const categories = await this.categoryService.getAllCategories();
+      // Responder con código 200 (OK) y la lista de categorías
+      res.status(200).json(categories);
+    } catch (error) {
+      // Si hay algún error, pasarlo al middleware de manejo de errores
+      next(error);
+    }
   };
 
   /**
@@ -66,16 +105,41 @@ export class CategoryController {
    *       500:
    *         $ref: '#/components/responses/InternalServerError'
    */
+  /**
+   * Crea una nueva categoría
+   *
+   * Este método recibe los datos para crear una nueva categoría,
+   * la guarda en la base de datos y devuelve la categoría creada.
+   * La URL de la imagen ya está incluida en req.body gracias al middleware processImageUpload.
+   *
+   * @param req - Objeto de solicitud con los datos de la categoría a crear
+   * @param res - Objeto de respuesta para enviar la categoría creada
+   * @param next - Función para pasar al siguiente middleware en caso de error
+   */
   createCategory = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const createCategoryDto = plainToInstance(CreateCategoryRequest, req.body);
-    const newCategory = await this.categoryService.createCategory(
-      createCategoryDto
-    );
-    res.status(201).json(newCategory);
+    try {
+      // Transformar los datos de la solicitud al formato DTO
+      const createCategoryDto = plainToInstance(
+        CreateCategoryRequest,
+        req.body
+      );
+
+      // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware fileUpload
+      // que la subió a Cloudinary y agregó la URL a req.body.image
+      const newCategory = await this.categoryService.createCategory(
+        createCategoryDto
+      );
+
+      // Responder con código 201 (Created) y la categoría creada
+      res.status(201).json(newCategory);
+    } catch (error) {
+      // Si hay algún error, pasarlo al middleware de manejo de errores
+      next(error);
+    }
   };
 
   /**
@@ -105,14 +169,34 @@ export class CategoryController {
    *       500:
    *         $ref: '#/components/responses/InternalServerError'
    */
+  /**
+   * Obtiene una categoría por su ID
+   *
+   * Este método recupera una categoría específica basada en su ID
+   * y la devuelve en la respuesta.
+   *
+   * @param req - Objeto de solicitud con el ID de la categoría en req.params.id
+   * @param res - Objeto de respuesta para enviar la categoría
+   * @param next - Función para pasar al siguiente middleware en caso de error
+   */
   getCategoryById = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const categoryId = Number(req.params.id);
-    const category = await this.categoryService.getCategoryById(categoryId);
-    res.status(200).json(category);
+    try {
+      // Extraer el ID de la categoría de los parámetros de la ruta y convertirlo a número
+      const categoryId = Number(req.params.id);
+
+      // Obtener la categoría del servicio
+      const category = await this.categoryService.getCategoryById(categoryId);
+
+      // Responder con código 200 (OK) y los datos de la categoría
+      res.status(200).json(category);
+    } catch (error) {
+      // Si hay algún error (como categoría no encontrada), pasarlo al middleware de errores
+      next(error);
+    }
   };
 
   /**
@@ -138,14 +222,34 @@ export class CategoryController {
    *       500:
    *         $ref: '#/components/responses/InternalServerError'
    */
+  /**
+   * Elimina una categoría
+   *
+   * Este método elimina una categoría específica basada en su ID.
+   * Si la operación es exitosa, responde con un código 204 (No Content).
+   *
+   * @param req - Objeto de solicitud con el ID de la categoría en req.params.id
+   * @param res - Objeto de respuesta para indicar éxito
+   * @param next - Función para pasar al siguiente middleware en caso de error
+   */
   deleteCategory = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const categoryId = Number(req.params.id);
-    await this.categoryService.deleteCategory(categoryId);
-    res.status(204).send();
+    try {
+      // Extraer el ID de la categoría de los parámetros de la ruta y convertirlo a número
+      const categoryId = Number(req.params.id);
+
+      // Eliminar la categoría a través del servicio
+      await this.categoryService.deleteCategory(categoryId);
+
+      // Responder con código 204 (No Content) para indicar eliminación exitosa sin contenido
+      res.status(204).send();
+    } catch (error) {
+      // Si hay algún error (como categoría no encontrada), pasarlo al middleware de errores
+      next(error);
+    }
   };
 
   /**
@@ -183,17 +287,44 @@ export class CategoryController {
    *       500:
    *         $ref: '#/components/responses/InternalServerError'
    */
+  /**
+   * Actualiza una categoría existente
+   *
+   * Este método actualiza una categoría específica basada en su ID
+   * con los datos proporcionados en la solicitud.
+   * Si se incluye una nueva imagen, esta ya habrá sido procesada por el middleware.
+   *
+   * @param req - Objeto de solicitud con ID en req.params.id y datos de actualización en req.body
+   * @param res - Objeto de respuesta para enviar la categoría actualizada
+   * @param next - Función para pasar al siguiente middleware en caso de error
+   */
   updateCategory = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    const categoryId = Number(req.params.id);
-    const updateCategoryDto = plainToInstance(UpdateCategoryRequest, req.body);
-    const updatedCategory = await this.categoryService.updateCategory(
-      categoryId,
-      updateCategoryDto
-    );
-    res.status(200).json(updatedCategory);
+    try {
+      // Extraer el ID de la categoría de los parámetros de la ruta
+      const categoryId = Number(req.params.id);
+
+      // Transformar los datos de la solicitud al formato DTO
+      const updateCategoryDto = plainToInstance(
+        UpdateCategoryRequest,
+        req.body
+      );
+
+      // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware
+      // Si se incluyó una nueva imagen, su URL ya estará en updateCategoryDto.image
+      const updatedCategory = await this.categoryService.updateCategory(
+        categoryId,
+        updateCategoryDto
+      );
+
+      // Responder con código 200 (OK) y la categoría actualizada
+      res.status(200).json(updatedCategory);
+    } catch (error) {
+      // Si hay algún error, pasarlo al middleware de manejo de errores
+      next(error);
+    }
   };
 }
