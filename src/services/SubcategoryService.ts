@@ -45,7 +45,17 @@ export class SubcategoryService {
     const savedSubcategory = await this.subcategoryRepository.save(
       createSubcategoryDto
     );
-    return this.subcategoryMapper.toResponseDto(savedSubcategory);
+
+    // Cargar la subcategoría con la relación de categoría para incluir el nombre de categoría
+    const subcategoryWithRelations = await this.subcategoryRepository.findOne({
+      where: { id: savedSubcategory.id },
+      relations: ["category"],
+    });
+
+    if (!subcategoryWithRelations)
+      throw new Error("Error al recuperar la subcategoría creada");
+
+    return this.subcategoryMapper.toResponseDto(subcategoryWithRelations);
   }
 
   async deleteSubcategory(id: number): Promise<void> {
@@ -53,10 +63,10 @@ export class SubcategoryService {
     if (!subcategory) throw new Error("Subcategory not found");
     await this.subcategoryRepository.remove(subcategory);
   }
-  
+
   /**
    * Actualiza una subcategoría existente
-   * 
+   *
    * @param id - El ID de la subcategoría a actualizar
    * @param updateDto - Los datos para actualizar la subcategoría
    * @returns Una promesa que resuelve a un objeto SubcategoryResponse con la subcategoría actualizada
@@ -69,7 +79,7 @@ export class SubcategoryService {
     // Buscar la subcategoría por ID
     const subcategory = await this.subcategoryRepository.findOneBy({ id });
     if (!subcategory) throw new Error("Subcategory not found");
-    
+
     // Actualizar solo los campos que vienen en la solicitud
     if (updateDto.name !== undefined) {
       subcategory.name = updateDto.name;
@@ -80,18 +90,21 @@ export class SubcategoryService {
     if (updateDto.categoryId !== undefined) {
       subcategory.categoryId = updateDto.categoryId;
     }
-    
+
     // Guardar la subcategoría actualizada
-    const updatedSubcategory = await this.subcategoryRepository.save(subcategory);
-    
+    const updatedSubcategory = await this.subcategoryRepository.save(
+      subcategory
+    );
+
     // Buscar la subcategoría actualizada con relaciones para incluir el nombre de la categoría
     const subcategoryWithRelations = await this.subcategoryRepository.findOne({
       where: { id },
       relations: ["category"],
     });
-    
-    if (!subcategoryWithRelations) throw new Error("Subcategory not found after update");
-    
+
+    if (!subcategoryWithRelations)
+      throw new Error("Subcategory not found after update");
+
     // Convertir la entidad actualizada a DTO de respuesta
     return this.subcategoryMapper.toResponseDto(subcategoryWithRelations);
   }

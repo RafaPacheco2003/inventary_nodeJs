@@ -18,7 +18,9 @@ async function updateSubcategories() {
       .where("subcategory.category_id IS NULL")
       .getMany();
 
-    console.log(`Se encontraron ${subcategoriesWithNullCategory.length} subcategorías con categoryId nulo`);
+    console.log(
+      `Se encontraron ${subcategoriesWithNullCategory.length} subcategorías con categoryId nulo`
+    );
 
     if (subcategoriesWithNullCategory.length === 0) {
       console.log("No hay subcategorías que actualizar");
@@ -26,15 +28,17 @@ async function updateSubcategories() {
     }
 
     // Buscar la primera categoría disponible para usar como predeterminada
-    const categoryRepository = AppDataSource.getRepository('categories');
+    const categoryRepository = AppDataSource.getRepository("categories");
     const defaultCategory = await categoryRepository
       .createQueryBuilder("category")
       .getOne();
 
     if (!defaultCategory) {
-      console.log("No se encontró ninguna categoría para usar como predeterminada");
+      console.log(
+        "No se encontró ninguna categoría para usar como predeterminada"
+      );
       console.log("Creando una categoría predeterminada...");
-      
+
       // Si no hay categorías, podríamos crear una
       // Pero esto requeriría importar la entidad Category y completar la lógica
       // Para este ejemplo, simplemente salimos
@@ -51,8 +55,9 @@ async function updateSubcategories() {
       .where("category_id IS NULL")
       .execute();
 
-    console.log(`Se actualizaron ${updateResult.affected} subcategorías con categoryId = ${defaultCategoryId}`);
-
+    console.log(
+      `Se actualizaron ${updateResult.affected} subcategorías con categoryId = ${defaultCategoryId}`
+    );
   } catch (error) {
     console.error("Error al actualizar las subcategorías:", error);
   } finally {
@@ -67,4 +72,4 @@ async function updateSubcategories() {
 // Ejecutar el script
 updateSubcategories()
   .then(() => console.log("Script completado"))
-  .catch(error => console.error("Error en el script:", error));
+  .catch((error) => console.error("Error en el script:", error));

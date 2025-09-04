@@ -41,7 +41,7 @@ export class SubcategoryMapper extends BaseMapper<
     if (updateDto.name !== undefined) {
       updates.name = updateDto.name;
     }
-    
+
     if (updateDto.image !== undefined) {
       updates.image = updateDto.image;
     }

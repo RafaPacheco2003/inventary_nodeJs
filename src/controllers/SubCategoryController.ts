@@ -2,25 +2,28 @@ import { Request, Response, NextFunction } from "express";
 import { SubcategoryService } from "../services/SubcategoryService";
 import { upload } from "../services/CloudinaryService";
 import { plainToInstance } from "class-transformer";
-import { CreateSubcategoryRequest, UpdateSubcategoryRequest } from "../dtos/Subcategory.dto";
+import {
+  CreateSubcategoryRequest,
+  UpdateSubcategoryRequest,
+} from "../dtos/Subcategory.dto";
 
 /**
  * CONTROLADOR DE SUBCATEGORÍAS
- * 
+ *
  * Este controlador maneja todas las operaciones relacionadas con subcategorías:
  * - Creación de nuevas subcategorías
  * - Obtención de subcategorías (todas o por ID)
  * - Actualización de subcategorías existentes
  * - Eliminación de subcategorías
- * 
+ *
  * Incluye soporte para carga de imágenes similar al controlador de categorías.
  */
 export class SubcategoryController {
   private subcategoryService: SubcategoryService;
-  
+
   /**
    * Middleware para procesar la carga de imágenes
-   * 
+   *
    * Este middleware de multer se encarga de recibir y almacenar temporalmente
    * el archivo de imagen que viene en la solicitud.
    */
@@ -32,10 +35,10 @@ export class SubcategoryController {
 
   /**
    * Obtiene todas las subcategorías
-   * 
+   *
    * Este método recupera todas las subcategorías de la base de datos
    * y las devuelve como un array en la respuesta.
-   * 
+   *
    * @param req - Objeto de solicitud
    * @param res - Objeto de respuesta para enviar el resultado
    * @param next - Función para pasar al siguiente middleware en caso de error
@@ -51,10 +54,10 @@ export class SubcategoryController {
 
   /**
    * Obtiene una subcategoría por su ID
-   * 
+   *
    * Este método recupera una subcategoría específica basada en su ID
    * y la devuelve en la respuesta.
-   * 
+   *
    * @param req - Objeto de solicitud con el ID de la subcategoría en req.params.id
    * @param res - Objeto de respuesta para enviar la subcategoría
    * @param next - Función para pasar al siguiente middleware en caso de error
@@ -71,11 +74,11 @@ export class SubcategoryController {
 
   /**
    * Crea una nueva subcategoría
-   * 
+   *
    * Este método recibe los datos para crear una nueva subcategoría,
    * la guarda en la base de datos y devuelve la subcategoría creada.
    * La URL de la imagen ya está incluida en req.body gracias al middleware processImageUpload.
-   * 
+   *
    * @param req - Objeto de solicitud con los datos de la subcategoría a crear
    * @param res - Objeto de respuesta para enviar la subcategoría creada
    * @param next - Función para pasar al siguiente middleware en caso de error
@@ -87,7 +90,7 @@ export class SubcategoryController {
         CreateSubcategoryRequest,
         req.body
       );
-      
+
       // La imagen ya fue procesada por el middleware fileUpload
       const subcategory = await this.subcategoryService.createSubcategory(
         createSubcategoryDto
@@ -100,11 +103,11 @@ export class SubcategoryController {
 
   /**
    * Actualiza una subcategoría existente
-   * 
+   *
    * Este método actualiza una subcategoría específica basada en su ID
    * con los datos proporcionados en la solicitud.
    * Si se incluye una nueva imagen, esta ya habrá sido procesada por el middleware.
-   * 
+   *
    * @param req - Objeto de solicitud con ID y datos de actualización
    * @param res - Objeto de respuesta para enviar la subcategoría actualizada
    * @param next - Función para pasar al siguiente middleware en caso de error
@@ -112,13 +115,13 @@ export class SubcategoryController {
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { id } = req.params;
-      
+
       // Transformar los datos de la solicitud al formato DTO
       const updateSubcategoryDto = plainToInstance(
-        UpdateSubcategoryRequest, 
+        UpdateSubcategoryRequest,
         req.body
       );
-      
+
       // La imagen ya fue procesada por el middleware fileUpload
       const subcategory = await this.subcategoryService.updateSubcategory(
         +id,
@@ -132,10 +135,10 @@ export class SubcategoryController {
 
   /**
    * Elimina una subcategoría
-   * 
+   *
    * Este método elimina una subcategoría específica basada en su ID.
    * Si la operación es exitosa, responde con un código 204 (No Content).
-   * 
+   *
    * @param req - Objeto de solicitud con el ID de la subcategoría en req.params.id
    * @param res - Objeto de respuesta para indicar éxito
    * @param next - Función para pasar al siguiente middleware en caso de error

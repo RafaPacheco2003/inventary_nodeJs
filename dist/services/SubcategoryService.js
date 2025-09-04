@@ -29,7 +29,14 @@ class SubcategoryService {
     async createSubcategory(createDto) {
         const createSubcategoryDto = (0, class_transformer_1.plainToInstance)(Subcategory_dto_1.CreateSubcategoryRequest, createDto);
         const savedSubcategory = await this.subcategoryRepository.save(createSubcategoryDto);
-        return this.subcategoryMapper.toResponseDto(savedSubcategory);
+        // Cargar la subcategoría con la relación de categoría para incluir el nombre de categoría
+        const subcategoryWithRelations = await this.subcategoryRepository.findOne({
+            where: { id: savedSubcategory.id },
+            relations: ["category"],
+        });
+        if (!subcategoryWithRelations)
+            throw new Error("Error al recuperar la subcategoría creada");
+        return this.subcategoryMapper.toResponseDto(subcategoryWithRelations);
     }
     async deleteSubcategory(id) {
         const subcategory = await this.subcategoryRepository.findOneBy({ id });

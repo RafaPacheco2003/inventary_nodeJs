@@ -105,19 +105,13 @@ class CategoryController {
          * @param next - Función para pasar al siguiente middleware en caso de error
          */
         this.createCategory = async (req, res, next) => {
-            try {
-                // Transformar los datos de la solicitud al formato DTO
-                const createCategoryDto = (0, class_transformer_1.plainToInstance)(Category_dto_1.CreateCategoryRequest, req.body);
-                // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware fileUpload
-                // que la subió a Cloudinary y agregó la URL a req.body.image
-                const newCategory = await this.categoryService.createCategory(createCategoryDto);
-                // Responder con código 201 (Created) y la categoría creada
-                res.status(201).json(newCategory);
-            }
-            catch (error) {
-                // Si hay algún error, pasarlo al middleware de manejo de errores
-                next(error);
-            }
+            // Transformar los datos de la solicitud al formato DTO
+            const createCategoryDto = (0, class_transformer_1.plainToInstance)(Category_dto_1.CreateCategoryRequest, req.body);
+            // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware fileUpload
+            // que la subió a Cloudinary y agregó la URL a req.body.image
+            const newCategory = await this.categoryService.createCategory(createCategoryDto);
+            // Responder con código 201 (Created) y la categoría creada
+            res.status(201).json(newCategory);
         };
         /**
          * @swagger

@@ -12,7 +12,7 @@ import { Transform } from "class-transformer";
 
 /**
  * DTO para crear una nueva subcategoría
- * 
+ *
  * Contiene los campos necesarios para crear una subcategoría y
  * sus reglas de validación.
  */
@@ -35,7 +35,7 @@ export class CreateSubcategoryRequest {
 
 /**
  * DTO para actualizar una subcategoría existente
- * 
+ *
  * Similar a CreateSubcategoryRequest, pero todos los campos son opcionales
  * ya que en una actualización no es necesario proporcionar todos los campos.
  */
@@ -51,7 +51,7 @@ export class UpdateSubcategoryRequest {
   image?: string;
 
   @IsOptional() // La categoría también es opcional en actualizaciones
-  @Transform(({ value }) => value ? parseInt(value, 10) : undefined) // Convertir string a número si existe
+  @Transform(({ value }) => (value ? parseInt(value, 10) : undefined)) // Convertir string a número si existe
   @IsNumber({}, { message: "El categoryId debe ser un número" })
   categoryId?: number;
 }
