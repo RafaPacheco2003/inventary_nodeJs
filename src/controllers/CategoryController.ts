@@ -121,25 +121,17 @@ export class CategoryController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    try {
-      // Transformar los datos de la solicitud al formato DTO
-      const createCategoryDto = plainToInstance(
-        CreateCategoryRequest,
-        req.body
-      );
+    // Transformar los datos de la solicitud al formato DTO
+    const createCategoryDto = plainToInstance(CreateCategoryRequest, req.body);
 
-      // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware fileUpload
-      // que la subió a Cloudinary y agregó la URL a req.body.image
-      const newCategory = await this.categoryService.createCategory(
-        createCategoryDto
-      );
+    // Ya no necesitamos pasar el archivo, la imagen ya fue procesada por el middleware fileUpload
+    // que la subió a Cloudinary y agregó la URL a req.body.image
+    const newCategory = await this.categoryService.createCategory(
+      createCategoryDto
+    );
 
-      // Responder con código 201 (Created) y la categoría creada
-      res.status(201).json(newCategory);
-    } catch (error) {
-      // Si hay algún error, pasarlo al middleware de manejo de errores
-      next(error);
-    }
+    // Responder con código 201 (Created) y la categoría creada
+    res.status(201).json(newCategory);
   };
 
   /**

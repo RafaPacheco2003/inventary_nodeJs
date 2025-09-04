@@ -42,7 +42,7 @@ router
     .post(
 // Flujo de middleware para crear una categoría con imagen:
 categoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
-fileUpload_1.processImageUpload, // 2. Segundo: procesar y subir la imagen a Cloudinary
+fileUpload_1.processImageUploadForCategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de categorías
 (0, validation_1.validateDto)(Category_dto_1.CreateCategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
 categoryController.createCategory // 4. Finalmente: crear la categoría en la base de datos
 );
@@ -65,7 +65,7 @@ router
     .put(
 // Flujo de middleware para actualizar una categoría con posible nueva imagen:
 categoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
-fileUpload_1.processImageUpload, // 2. Segundo: procesar y subir la imagen a Cloudinary (si hay)
+fileUpload_1.processImageUploadForCategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de categorías
 (0, validation_1.validateDto)(Category_dto_1.UpdateCategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
 categoryController.updateCategory // 4. Finalmente: actualizar la categoría en la base de datos
 )

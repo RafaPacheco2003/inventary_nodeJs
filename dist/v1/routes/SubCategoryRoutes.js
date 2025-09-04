@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const SubCategoryController_1 = require("../../controllers/SubCategoryController");
 const validation_1 = require("../../middleware/validation");
+const fileUpload_1 = require("../../middleware/fileUpload");
 const Subcategory_dto_1 = require("../../dtos/Subcategory.dto");
 /**
  * @swagger
@@ -37,7 +38,13 @@ router
      *         description: Subcategoría creada exitosamente
      */
     .get(subcategoryController.getAll)
-    .post((0, validation_1.validateDto)(Subcategory_dto_1.CreateSubcategoryRequest), subcategoryController.create);
+    .post(
+// Flujo de middleware para crear una subcategoría con imagen:
+subcategoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
+fileUpload_1.processImageUploadForSubcategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de subcategorías
+(0, validation_1.validateDto)(Subcategory_dto_1.CreateSubcategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
+subcategoryController.create // 4. Finalmente: crear la subcategoría en la base de datos
+);
 router
     .route("/:id")
     /**
@@ -75,5 +82,12 @@ router
      *         description: Subcategoría no encontrada
      */
     .get(subcategoryController.getById)
+    .put(
+// Flujo de middleware para actualizar una subcategoría con posible nueva imagen:
+subcategoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
+fileUpload_1.processImageUploadForSubcategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de subcategorías
+(0, validation_1.validateDto)(Subcategory_dto_1.UpdateSubcategoryRequest, true), // 3. Tercero: validar los datos (con skipMissingProperties=true para actualizaciones parciales)
+subcategoryController.update // 4. Finalmente: actualizar la subcategoría en la base de datos
+)
     .delete(subcategoryController.delete);
 exports.default = router;

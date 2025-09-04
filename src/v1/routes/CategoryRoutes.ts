@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { CategoryController } from "../../controllers/CategoryController";
 import { validateDto } from "../../middleware/validation";
-import { processImageUpload } from "../../middleware/fileUpload";
+import { processImageUploadForCategory } from "../../middleware/fileUpload";
 import {
   CreateCategoryRequest,
   UpdateCategoryRequest,
@@ -46,7 +46,7 @@ router
   .post(
     // Flujo de middleware para crear una categoría con imagen:
     categoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
-    processImageUpload, // 2. Segundo: procesar y subir la imagen a Cloudinary
+    processImageUploadForCategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de categorías
     validateDto(CreateCategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
     categoryController.createCategory // 4. Finalmente: crear la categoría en la base de datos
   );
@@ -70,7 +70,7 @@ router
   .put(
     // Flujo de middleware para actualizar una categoría con posible nueva imagen:
     categoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
-    processImageUpload, // 2. Segundo: procesar y subir la imagen a Cloudinary (si hay)
+    processImageUploadForCategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de categorías
     validateDto(UpdateCategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
     categoryController.updateCategory // 4. Finalmente: actualizar la categoría en la base de datos
   )

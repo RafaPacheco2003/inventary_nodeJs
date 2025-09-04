@@ -28,7 +28,12 @@ __decorate([
     __metadata("design:type", String)
 ], Subcategory.prototype, "image", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ name: "category_id", nullable: true }),
+    __metadata("design:type", Number)
+], Subcategory.prototype, "categoryId", void 0);
+__decorate([
     (0, typeorm_1.ManyToOne)(() => Category_1.Category, (category) => category.subcategories),
+    (0, typeorm_1.JoinColumn)({ name: "category_id" }),
     __metadata("design:type", Category_1.Category)
 ], Subcategory.prototype, "category", void 0);
 exports.Subcategory = Subcategory = __decorate([

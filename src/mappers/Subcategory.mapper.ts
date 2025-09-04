@@ -23,11 +23,8 @@ export class SubcategoryMapper extends BaseMapper<
   toEntity(createDto: CreateSubcategoryRequest): Subcategory {
     const entity = new Subcategory();
     entity.name = createDto.name;
-    entity.image = createDto.image;
-
-    if (createDto.categoryId) {
-      entity.category = { id: createDto.categoryId } as Category;
-    }
+    entity.image = createDto.image || "placeholder-image.jpg"; // Valor por defecto si no hay imagen
+    entity.categoryId = createDto.categoryId;
 
     return entity;
   }
@@ -41,11 +38,16 @@ export class SubcategoryMapper extends BaseMapper<
   ): Partial<Subcategory> {
     const updates: Partial<Subcategory> = {};
 
-    updates.name = updateDto.name;
-    updates.image = updateDto.image;
+    if (updateDto.name !== undefined) {
+      updates.name = updateDto.name;
+    }
+    
+    if (updateDto.image !== undefined) {
+      updates.image = updateDto.image;
+    }
 
-    if (updateDto.categoryId) {
-      updates.category = { id: updateDto.categoryId } as Category;
+    if (updateDto.categoryId !== undefined) {
+      updates.categoryId = updateDto.categoryId;
     }
 
     return updates;

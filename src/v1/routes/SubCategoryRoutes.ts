@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { SubcategoryController } from "../../controllers/SubCategoryController";
 import { validateDto } from "../../middleware/validation";
+import { processImageUploadForSubcategory } from "../../middleware/fileUpload";
 import {
   CreateSubcategoryRequest,
   UpdateSubcategoryRequest,
@@ -41,7 +42,13 @@ router
    *         description: Subcategoría creada exitosamente
    */
   .get(subcategoryController.getAll)
-  .post(validateDto(CreateSubcategoryRequest), subcategoryController.create);
+  .post(
+    // Flujo de middleware para crear una subcategoría con imagen:
+    subcategoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
+    processImageUploadForSubcategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de subcategorías
+    validateDto(CreateSubcategoryRequest), // 3. Tercero: validar los datos con la URL de imagen ya procesada
+    subcategoryController.create // 4. Finalmente: crear la subcategoría en la base de datos
+  );
 
 router
   .route("/:id")
@@ -80,6 +87,13 @@ router
    *         description: Subcategoría no encontrada
    */
   .get(subcategoryController.getById)
+  .put(
+    // Flujo de middleware para actualizar una subcategoría con posible nueva imagen:
+    subcategoryController.uploadImage, // 1. Primero: middleware de multer para recibir el archivo
+    processImageUploadForSubcategory, // 2. Segundo: procesar y subir la imagen a Cloudinary en la carpeta de subcategorías
+    validateDto(UpdateSubcategoryRequest, true), // 3. Tercero: validar los datos (con skipMissingProperties=true para actualizaciones parciales)
+    subcategoryController.update // 4. Finalmente: actualizar la subcategoría en la base de datos
+  )
   .delete(subcategoryController.delete);
 
 export default router;

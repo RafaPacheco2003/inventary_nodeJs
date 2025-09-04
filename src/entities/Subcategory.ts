@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Category } from "./Category";
 
 @Entity("subcategories")
@@ -12,6 +12,10 @@ export class Subcategory {
   @Column()
   image!: string;
 
+  @Column({ name: "category_id", nullable: true })
+  categoryId?: number;
+
   @ManyToOne(() => Category, (category) => category.subcategories)
+  @JoinColumn({ name: "category_id" })
   category!: Category;
 }

@@ -14,10 +14,8 @@ class SubcategoryMapper extends base_mapper_1.BaseMapper {
     toEntity(createDto) {
         const entity = new Subcategory_1.Subcategory();
         entity.name = createDto.name;
-        entity.image = createDto.image;
-        if (createDto.categoryId) {
-            entity.category = { id: createDto.categoryId };
-        }
+        entity.image = createDto.image || "placeholder-image.jpg"; // Valor por defecto si no hay imagen
+        entity.categoryId = createDto.categoryId;
         return entity;
     }
     /**
@@ -25,10 +23,14 @@ class SubcategoryMapper extends base_mapper_1.BaseMapper {
      */
     toUpdateEntity(entity, updateDto) {
         const updates = {};
-        updates.name = updateDto.name;
-        updates.image = updateDto.image;
-        if (updateDto.categoryId) {
-            updates.category = { id: updateDto.categoryId };
+        if (updateDto.name !== undefined) {
+            updates.name = updateDto.name;
+        }
+        if (updateDto.image !== undefined) {
+            updates.image = updateDto.image;
+        }
+        if (updateDto.categoryId !== undefined) {
+            updates.categoryId = updateDto.categoryId;
         }
         return updates;
     }
