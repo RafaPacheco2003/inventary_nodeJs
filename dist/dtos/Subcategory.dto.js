@@ -67,7 +67,7 @@ __decorate([
 __decorate([
     (0, class_validator_1.IsOptional)() // La categoría también es opcional en actualizaciones
     ,
-    (0, class_transformer_1.Transform)(({ value }) => value ? parseInt(value, 10) : undefined) // Convertir string a número si existe
+    (0, class_transformer_1.Transform)(({ value }) => (value ? parseInt(value, 10) : undefined)) // Convertir string a número si existe
     ,
     (0, class_validator_1.IsNumber)({}, { message: "El categoryId debe ser un número" }),
     __metadata("design:type", Number)

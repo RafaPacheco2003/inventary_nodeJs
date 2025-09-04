@@ -42,14 +42,8 @@ class SubcategoryMapper extends base_mapper_1.BaseMapper {
         response.id = entity.id;
         response.name = entity.name;
         response.image = entity.image;
-        if (entity.category) {
-            response.categoryId = entity.category.id;
-            response.categoryName = entity.category.name || "Sin categoria";
-        }
-        else {
-            response.categoryId = 0;
-            response.categoryName = "Sin categoria";
-        }
+        response.categoryId = entity.category?.id ?? 0;
+        response.categoryName = entity.category?.name ?? "Sin categoria";
         return response;
     }
 }

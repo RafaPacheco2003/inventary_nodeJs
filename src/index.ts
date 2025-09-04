@@ -7,6 +7,7 @@ import CategoryRoutes from "./v1/routes/CategoryRoutes";
 import { errorHandler } from "./middleware/errorHandler";
 import { SwaggerConfig } from "./config/Swagger";
 import SubCategoryRoutes from "./v1/routes/SubCategoryRoutes";
+import ProductRoutes from "./v1/routes/ProductRoutes";
 
 const PORT = process.env.PORT || 3000;
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/categories", CategoryRoutes);
 app.use("/api/v1/subcategories", SubCategoryRoutes);
+app.use("/api/v1/products", ProductRoutes);
 
 app.get("/health", (_, res) =>
   res.status(200).json({

@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import { Category } from "./Category";
+import { Product } from "./Product";
 
 @Entity("subcategories")
 export class Subcategory {
@@ -24,4 +26,7 @@ export class Subcategory {
   @ManyToOne(() => Category, (category) => category.subcategories)
   @JoinColumn({ name: "category_id" })
   category!: Category;
+
+  @OneToMany(() => Product, (product) => product.subcategory)
+  products!: Product[];
 }
